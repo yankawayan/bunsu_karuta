@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.container {
+    display: flex;
+    flex-direction: column; /* 縦方向に要素を並べる */
+    justify-content: center; /* 水平方向に中央揃え */
+    align-items: center; /* 垂直方向に中央揃え */
+    height: 100vh; /* ビューポートの高さいっぱいに設定 */
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3列 */
+    grid-template-rows: repeat(3, 1fr); /* 3行 */
+    gap: 10px; /* 要素間の間隔を設定 */
+    /* width: 300px; グリッドコンテナの幅 */
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3列 */
+    grid-template-rows: repeat(3, 1fr); /* 3行 */
+    gap: 30px; /* 要素間の間隔を設定 */
+    /* width: 300px; グリッドコンテナの幅 */
+}
+.grid-item img {
+    width: 100%; /* 画像の幅を100%に設定 */
+    height: auto; /* アスペクト比を維持して画像をリサイズ */
+}
+.card.active {
+    background-color: yellow;
+}
+.card.flipped {
+    background-color: gray;
+}
+#message {
+    font-size: 24px;
+    margin: 10px;
+}
