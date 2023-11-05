@@ -41,12 +41,20 @@ function shuffle(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
+const modal = document.getElementById("modal");
+function openModal() {
+    modal.style.display = "block";
+    setTimeout(closeModal, 2000); // 2秒後に自動的に閉じる
+}
+function closeModal() {
+    modal.style.display = "none";
+}
 
 function createCardElement(card) {
     const cardElement = document.createElement("div");
     cardElement.className = "card";
     cardElement.classList.add("grid-item");
-    cardElement.textContent = card.name;
+    //cardElement.textContent = card.name;
     // 画像要素を作成
     const image = document.createElement("img");
     // 画像のパスを設定
@@ -62,17 +70,18 @@ function createCardElement(card) {
     // cardがクリックされたとき
     cardElement.addEventListener("click", () => {
         if (!card.flipped) {
-            cardElement.classList.add("active");
+            //cardElement.classList.add("active");
             //flipped = true は裏返しの判別
             card.flipped = true;
             if (card.id === currentQuestion.id) {
-                showResult("正解");
+                //showResult("正解");
+                openModal();
                 playSound("sounds/shakin.mp3");
             } else {
                 showResult("不正解");
                 playSound("sounds/pafu.mp3")
             }
-            cardElement.classList.add("flipped");
+            //cardElement.classList.add("flipped");
         }
     });
     return cardElement;
@@ -96,7 +105,7 @@ function showResult(message) {
             // No more questions.
             document.getElementById("question").textContent = "ゲームクリア！"; // You can replace this message with your own.
         }
-    }, 5000);
+    }, 2000);
 }
 // sound tag is "<audio id = "myAudio">"
 function playSound(soundPath) {
