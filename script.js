@@ -1,13 +1,13 @@
-const cards = [
-    { id: 1, name: "あ", imagePath: "cardimages/A1.png", altText: "A1"},
-    { id: 2, name: "い", imagePath: "cardimages/A2.png", altText: "A2"},
-    { id: 3, name: "う", imagePath: "cardimages/A3.png", altText: "A3"},
-    { id: 4, name: "え", imagePath: "cardimages/A4.png", altText: "A4"},
-    { id: 5, name: "お", imagePath: "cardimages/A5.png", altText: "A5"},
-    { id: 6, name: "か", imagePath: "cardimages/A6.png", altText: "A6"},
-    { id: 7, name: "き", imagePath: "cardimages/A7.png", altText: "A7"},
-    { id: 8, name: "く", imagePath: "cardimages/A8.png", altText: "A8"},
-    { id: 9, name: "け", imagePath: "cardimages/A9.png", altText: "A9"},
+let cards = [
+    { id: 1, imagePath: "cardimages/A1.png", altText: "A1"},
+    { id: 2, imagePath: "cardimages/A2.png", altText: "A2"},
+    { id: 3, imagePath: "cardimages/A3.png", altText: "A3"},
+    { id: 4, imagePath: "cardimages/A4.png", altText: "A4"},
+    { id: 5, imagePath: "cardimages/A5.png", altText: "A5"},
+    { id: 6, imagePath: "cardimages/A6.png", altText: "A6"},
+    { id: 7, imagePath: "cardimages/A7.png", altText: "A7"},
+    { id: 8, imagePath: "cardimages/A8.png", altText: "A8"},
+    { id: 9, imagePath: "cardimages/A9.png", altText: "A9"},
 ];
 
 const questions = [
@@ -20,20 +20,35 @@ const questions = [
     { id: 7, text: "赤は青より４多い A7 1"},
     { id: 8, text: "赤は青より４少ない A8 1"},
     { id: 9, text: "赤は青と等しい A9 1"},
+    { id: 10, text: "青は赤より１少ない A1 2"},
+    { id: 11, text: "青は赤より１多い A2 2"},
+    { id: 12, text: "青は赤より２少ない A3 2"},
+    { id: 13, text: "青は赤より２多い A4 2"},
+    { id: 14, text: "青は赤より３少ない A5 2"},
+    { id: 15, text: "青は赤より３多い A6 2"},
+    { id: 16, text: "青は赤より４少ない A7 2"},
+    { id: 17, text: "青は赤より４多い A8 2"},
+    { id: 18, text: "青は赤と等しい A9 2"},
+
 ];    
-    // "青は赤より１少ない A1 2",
-    // "青は赤より１多い A2 2",
-    // "青は赤より２少ない A3 2",
-    // "青は赤より２多い A4 2",
-    // "青は赤より３少ない A5 2",
-    // "青は赤より３多い A6 2",
-    // "青は赤より４少ない A7 2",
-    // "青は赤より４多い A8 2",
-    // "青は赤と等しい A9 2",
 
 let activeCard = null;
 let currentQuestion = null;
 let availableQuestions = null;
+// "red" "blue" "all"
+// let questionPattern = null;
+let questionPattern = "red";
+const settingTime = 0;
+
+function changeCardsImagePath(cardPattern){
+    for(let i =  0; i < cards.length; i++){
+        const imageNum = (i+1).toString();
+        const imagePath = "cardimages/" + cardPattern + imageNum + ".png";
+        cards[i].imagePath = imagePath;
+    }
+}
+
+changeCardsImagePath("B");
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -42,9 +57,11 @@ function shuffle(array) {
     }
 }
 const modal = document.getElementById("modal");
-function openModal() {
+
+function openModal(message) {
+    document.getElementById("modal-message").textContent = message;
     modal.style.display = "block";
-    setTimeout(closeModal, 2000); // 2秒後に自動的に閉じる
+    setTimeout(closeModal, settingTime);
 }
 function closeModal() {
     modal.style.display = "none";
@@ -54,7 +71,6 @@ function createCardElement(card) {
     const cardElement = document.createElement("div");
     cardElement.className = "card";
     cardElement.classList.add("grid-item");
-    //cardElement.textContent = card.name;
     // 画像要素を作成
     const image = document.createElement("img");
     // 画像のパスを設定
@@ -62,72 +78,59 @@ function createCardElement(card) {
     // 画像の代替テキストを設定
     image.alt = card.altText;
     // ランダムな回転角度を生成（-30度から+30度まで）
-    const randomRotation = Math.floor(Math.random() * 61) - 30;
+    //const randomRotation = Math.floor(Math.random() * 61) - 30;
     // 画像にランダムな回転を適用
-    image.style.transform = `rotate(${randomRotation}deg)`;
+    //image.style.transform = `rotate(${randomRotation}deg)`;
     // 画像をカードに追加
     cardElement.appendChild(image);
     // cardがクリックされたとき
     cardElement.addEventListener("click", () => {
-        if (!card.flipped) {
-            //cardElement.classList.add("active");
-            //flipped = true は裏返しの判別
-            card.flipped = true;
-            if (card.id === currentQuestion.id) {
-                //showResult("正解");
-                openModal();
-                playSound("sounds/shakin.mp3");
-            } else {
-                showResult("不正解");
-                playSound("sounds/pafu.mp3")
-            }
-            //cardElement.classList.add("flipped");
+        if (card.id === currentQuestion.id % 9) {
+            //showResult("正解");
+            openModal("正解！");
+            playSound("sounds/shakin.mp3");
+        } else {
+            //showResult("不正解");
+            openModal("おてつき");
+            playSound("sounds/pafu.mp3")
         }
-    });
+        // closemodalと同じタイミング
+        setTimeout(refleshQuestion, settingTime);
+        }
+    );
     return cardElement;
 }
 
-function showResult(message) {
-    const messageElement = document.getElementById("message");
-    messageElement.textContent = message;
-    // Remove the current question.
-    availableQuestions.splice(availableQuestions.indexOf(currentQuestion), 1); 
-    setTimeout(() => {
-        messageElement.textContent = "";
-        if (availableQuestions.length > 0) {
-            currentQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-            document.getElementById("question").textContent = currentQuestion.text;
-            document.querySelectorAll(".card").forEach((card) => {
-                card.flipped = false;
-                card.classList.remove("active");
-            });
-        } else {
-            // No more questions.
-            document.getElementById("question").textContent = "ゲームクリア！"; // You can replace this message with your own.
-        }
-    }, 2000);
-}
 // sound tag is "<audio id = "myAudio">"
 function playSound(soundPath) {
     const myAudio = document.getElementById("myAudio");
     myAudio.src = soundPath;
     myAudio.play();
 }
-function initGame() {
+function refleshQuestion(){
     shuffle(cards);
-    shuffle(questions);
-    //Get the last question and delete it from questions .
-    availableQuestions = [...questions]; // Create a copy of the questions array.
-    currentQuestion = availableQuestions.pop();
-    //currentQuestion = questions[0];
+    if(questionPattern === "red"){
+        availableQuestions = questions.slice(0, 10);
+    }else if(questionPattern === "blue"){
+        availableQuestions = questions.slice(10, 19);
+    }else{
+        // availableQuestions  "all"
+        availableQuestions = questions;
+    }
+    // shuffle(availableQuestions);
+    const arrayLength = availableQuestions.length;
+    // 1 から arrayLength までの整数をランダムに生成
+    const randomIndex = Math.floor(Math.random() * arrayLength);
+    currentQuestion = availableQuestions[randomIndex];
     document.getElementById("question").textContent = currentQuestion.text;
     const cardsContainer = document.getElementById("cards");
-    // reset cards view
     cardsContainer.innerHTML = "";
     cards.forEach((card) => {
-        card.flipped = false;
         cardsContainer.appendChild(createCardElement(card));
     });
+}
+function initGame() {
+    refleshQuestion();
 }
 
 initGame();
