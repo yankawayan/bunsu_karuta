@@ -11,44 +11,59 @@ let cards = [
 ];
 
 const questions = [
-    { id: 1, text: "赤は青より１多い A1 1"},
-    { id: 2, text: "赤は青より１少ない A2 1"},
-    { id: 3, text: "赤は青より２多い A3 1"},
-    { id: 4, text: "赤は青より２少ない A4 1"},
-    { id: 5, text: "赤は青より３多い A5 1"},
-    { id: 6, text: "赤は青より３少ない A6 1"},
-    { id: 7, text: "赤は青より４多い A7 1"},
-    { id: 8, text: "赤は青より４少ない A8 1"},
-    { id: 9, text: "赤は青と等しい A9 1"},
-    { id: 10, text: "青は赤より１少ない A1 2"},
-    { id: 11, text: "青は赤より１多い A2 2"},
-    { id: 12, text: "青は赤より２少ない A3 2"},
-    { id: 13, text: "青は赤より２多い A4 2"},
-    { id: 14, text: "青は赤より３少ない A5 2"},
-    { id: 15, text: "青は赤より３多い A6 2"},
-    { id: 16, text: "青は赤より４少ない A7 2"},
-    { id: 17, text: "青は赤より４多い A8 2"},
-    { id: 18, text: "青は赤と等しい A9 2"},
+    { id: 1, text: "赤は青より１多い"},
+    { id: 2, text: "赤は青より１少ない"},
+    { id: 3, text: "赤は青より２多い"},
+    { id: 4, text: "赤は青より２少ない"},
+    { id: 5, text: "赤は青より３多い"},
+    { id: 6, text: "赤は青より３少ない"},
+    { id: 7, text: "赤は青より４多い"},
+    { id: 8, text: "赤は青より４少ない"},
+    { id: 9, text: "赤は青と等しい"},
+    { id: 10, text: "青は赤より１少ない"},
+    { id: 11, text: "青は赤より１多い"},
+    { id: 12, text: "青は赤より２少ない"},
+    { id: 13, text: "青は赤より２多い"},
+    { id: 14, text: "青は赤より３少ない"},
+    { id: 15, text: "青は赤より３多い"},
+    { id: 16, text: "青は赤より４少ない"},
+    { id: 17, text: "青は赤より４多い"},
+    { id: 18, text: "青は赤と等しい"},
 
-];    
+];
+//一周終わってパターン変化
 
 let activeCard = null;
 let currentQuestion = null;
 let availableQuestions = null;
+let extension = ".jpg";
+let score = 0;
+let ct = 0;
+
+let list = null;
+
 // "red" "blue" "all"
 // let questionPattern = null;
 let questionPattern = "red";
-const settingTime = 0;
 
 function changeCardsImagePath(cardPattern){
     for(let i =  0; i < cards.length; i++){
         const imageNum = (i+1).toString();
-        const imagePath = "cardimages/" + cardPattern + imageNum + ".png";
+        const imagePath = "cardimages/" + cardPattern + imageNum + extension;
         cards[i].imagePath = imagePath;
+        cards[i].altText = cardPattern + imageNum;
     }
 }
 
-changeCardsImagePath("B");
+changeCardsImagePath("A");
+// changeCardsImagePath("B");
+// changeCardsImagePath("C");
+// changeCardsImagePath("D");
+// changeCardsImagePath("E");
+// changeCardsImagePath("F");
+// changeCardsImagePath("G");
+// changeCardsImagePath("H");
+
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -58,10 +73,11 @@ function shuffle(array) {
 }
 const modal = document.getElementById("modal");
 
-function openModal(message) {
-    document.getElementById("modal-message").textContent = message;
+function openModal(message,waitingTime=1000) {
+    modalMessage = document.getElementById("modal-message");
+    modalMessage.innerHTML = message;
     modal.style.display = "block";
-    setTimeout(closeModal, settingTime);
+    setTimeout(closeModal, waitingTime);
 }
 function closeModal() {
     modal.style.display = "none";
@@ -89,13 +105,15 @@ function createCardElement(card) {
             //showResult("正解");
             openModal("正解！");
             playSound("sounds/shakin.mp3");
+            score++;
+            //document.getElementById("score").textContent = score.toString();
         } else {
             //showResult("不正解");
             openModal("おてつき");
             playSound("sounds/pafu.mp3")
         }
         // closemodalと同じタイミング
-        setTimeout(refleshQuestion, settingTime);
+        setTimeout(refleshQuestion, 1010);
         }
     );
     return cardElement;
@@ -108,6 +126,9 @@ function playSound(soundPath) {
     myAudio.play();
 }
 function refleshQuestion(){
+    if(ct === 10){
+        openModal("問題終了！！<br>あなたの得点は、"+score+"　点でした！！！",5000);
+    }
     shuffle(cards);
     if(questionPattern === "red"){
         availableQuestions = questions.slice(0, 10);
@@ -123,11 +144,13 @@ function refleshQuestion(){
     const randomIndex = Math.floor(Math.random() * arrayLength);
     currentQuestion = availableQuestions[randomIndex];
     document.getElementById("question").textContent = currentQuestion.text;
+    document.getElementById("score").textContent = score.toString()+"/10";
     const cardsContainer = document.getElementById("cards");
     cardsContainer.innerHTML = "";
     cards.forEach((card) => {
         cardsContainer.appendChild(createCardElement(card));
     });
+    ct++;
 }
 function initGame() {
     refleshQuestion();
