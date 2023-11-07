@@ -19,11 +19,11 @@ h1 {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3列 */
     grid-template-rows: repeat(3, 1fr); /* 3行 */
-    gap: auto; /* 要素間の間隔を設定 */
-    width: 100%; /*グリッドコンテナの幅 */
+    gap: 30px; /* 要素間の間隔を設定 */
+    width: 1000px; /*グリッドコンテナの幅 */
 }
 .grid-item img {
-    width: 95%; /* 画像の幅を100%に設定 */
+    width: 100%; /* 画像の幅を100%に設定 */
     height: auto; /* アスペクト比を維持して画像をリサイズ */
     
 }
