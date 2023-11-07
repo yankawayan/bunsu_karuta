@@ -1,7 +1,7 @@
 # bunsu_karuta
 
 githubから開くリンク
-https://yankawayan/github.io/bunsu_karuta/index.html
+https://yankawayan/github.io/bunsu_karuta/doc/index.html
 
 レスポンシブデザインについて
 １．モバイルファースト
